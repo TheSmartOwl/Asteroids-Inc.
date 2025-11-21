@@ -1,0 +1,232 @@
+<html>
+  <head>
+    <title>Asteroid Mining Inc.</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22210%22%20height%3D%22200%22%3E%3Cpolygon%20points%3D%22205%2C100%20155%2C186%2055%2C186%205%2C100%2055%2C14%20155%2C14%22%20stroke%3D%22%23ff454c%22%20stroke-width%3D%224%22%20fill%3D%22%234c1e3a%22/%3E%3C/svg%3E"><!--Red hexagon SVG-->
+    <style>
+      * { box-sizing: border-box }
+      h2 { color: #49e97a; text-align: center }
+      body { font-family: 'Lucida Console', 'Arial'; background-size: 300px 300px; background-repeat: repeat; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 500'%3E%3Crect width='500' height='500' fill='%23111134'/%3E%3Ccircle cx='45' cy='120' r='2.5' fill='white'/%3E%3Ccircle cx='300' cy='400' r='1.5' fill='white'/%3E%3Ccircle cx='470' cy='80' r='2' fill='white'/%3E%3Ccircle cx='150' cy='30' r='1' fill='white'/%3E%3Ccircle cx='90' cy='460' r='2.2' fill='white'/%3E%3Ccircle cx='220' cy='270' r='2.8' fill='white'/%3E%3Ccircle cx='380' cy='150' r='1.8' fill='white'/%3E%3Ccircle cx='410' cy='320' r='2.4' fill='white'/%3E%3Ccircle cx='60' cy='350' r='1.2' fill='white'/%3E%3Ccircle cx='190' cy='190' r='2.6' fill='white'/%3E%3Ccircle cx='330' cy='90' r='2.1' fill='white'/%3E%3Ccircle cx='250' cy='450' r='1.9' fill='white'/%3E%3Ccircle cx='120' cy='220' r='2.3' fill='white'/%3E%3Ccircle cx='480' cy='200' r='2.7' fill='white'/%3E%3Ccircle cx='275' cy='75' r='1.6' fill='white'/%3E%3Ccircle cx='360' cy='470' r='2.9' fill='white'/%3E%3Ccircle cx='30' cy='30' r='1.4' fill='white'/%3E%3Ccircle cx='440' cy='250' r='2.2' fill='white'/%3E%3Ccircle cx='210' cy='110' r='2.5' fill='white'/%3E%3Ccircle cx='100' cy='390' r='1.7' fill='white'/%3E%3C/svg%3E") }
+      /*Starry space background SVG*/
+      /*Blank background in case of errors: body { font-family: 'Lucida Console', 'Arial'; background: #111134 }*/
+      
+      /*Static styles*/
+      #hiddenMenuButton { z-index: 3 }
+      #side-menu { position: relative; float: left; color: #49e97a; background: rgba(42, 86, 81, 0.85); border: #49e97a solid; border-radius: 5px; padding: 10px; z-index: 0; text-align: center; margin-top: 10px }/*#204c47*/
+      #side-menu button:enabled, #hiddenMenu button { color: #8cfffb; background: #3b7873; border: #8cfffb solid; border-radius: 5px }
+      #side-menu .disabled { color: #3b7873; background: #204c47; border: #3b7873 solid; border-radius: 5px } /*button:disabled*/
+      #click-section { position: relative; float: left; z-index: 0 }
+      #credits { position: relative; color: #49e97a; background: rgba(42, 86, 81, 0.85); border: #49e97a solid; border-radius: 5px; width: 25%; margin-left: 37.5%; margin-right: 37.5%; text-align: center; padding: 2px; z-index: 0 }
+      #hiddenMenuButton { position: fixed; right: 10px; top: 10px }
+      #hiddenMenuButton button { color: #fff200; border: #fff200 solid; background: #4c4827; border-radius: 5px }
+      #hiddenMenu { color: #fff200; position: fixed; right: 5px; top: 5px; padding: 10px; padding-right: 40px; padding-top: 13px; background: #4c4827; border: #fff200 solid; border-radius: 5px; z-index: 1 }
+      #submitMenu { color: #fff200; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 10px; background: #4c4827; border: #fff200 solid; border-radius: 5px; z-index: 1; text-align: center }
+      #submitMenu input { color: #8cfffb; border: #8cfffb solid; background: #3b7873; border-radius: 5px }
+      #submitMenu button { position: fixed; right: -11px; top: -11px; color: #fff200; border: #fff200 solid; background: #4c4827; border-radius: 5px }
+      #savedMenu { color: #fff200; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 10px; background: #4c4827; border: #fff200 solid; border-radius: 5px; z-index: 1; text-align: center }
+      #savedMenu button { color: #8cfffb; background: #3b7873; border: #8cfffb solid; border-radius: 5px }
+      .svg-button { background: transparent; border: none !important }
+      
+      /*Button feedback*/
+      button:enabled:hover { transform: scale(1.05, 1.05) }
+      button:enabled:active { transform: scale(0.95, 0.95) }
+      #click-section button:enabled:hover { transform: scale(1.01, 1.01) }
+      #click-section button:enabled:active { transform: scale(0.99, 0.99) }
+      
+      /*Fade transitions*/
+      .fade-enter-active, .fade-leave-active { transition: opacity 0.25s ease; }
+      .fade-enter, .fade-leave-to { opacity: 0; }
+      
+      /*Rotating animation*/
+      .rotating { display: inline-block; animation: spin 60s linear infinite; transform-origin: center; }
+      @keyframes spin { 
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+
+      /*DIV positioning based on screen width*/
+      @media only screen and (max-width:820px) {
+        #side-menu { width: 100% }
+        #click-section { float: none; margin-left: 25%; margin-right: 25%; padding: 20px; display: flex; justify-content: center } /*text-align: center*/
+        #clicker { margin-left: 0%; margin-right: 0% }
+      }
+
+      @media only screen and (min-width:821px) {
+        #side-menu { width: 50%}
+        #click-section { padding-top: 180px; width: 50% }
+        #clicker { margin-left: 25%; margin-right: 25% }
+      }
+    </style>
+  </head>
+  <body>
+    <script src=https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.4/gsap.min.js></script>
+    <script type="module">
+      import 'https://cdnjs.cloudflare.com/ajax/libs/vue/2.7.8/vue.min.js'
+      let app = new Vue({
+        el: "#app",
+        data: {
+          lastUpdate: performance.now(),
+          inputtedSaveCode: '',
+          creditsTweened: 0,
+          gameStats: { //Game-related values that are used in save-codes
+            credits: 0,
+            oreQuality: 1,
+            drillCount: 0,
+            drillDelayReduction: 1,
+            drillPower: 1
+          },
+          menuToggles: { //Toggle values for menus that are initially hidden
+            savedMenu: false,
+            submitMenu: false,
+            hiddenMenu: false,
+            statMenu: false
+          }
+        },
+        computed: {
+          creditsAnimated() {
+            return this.creditsTweened.toFixed(0)
+          },
+          //Upgrade cost values that dynamically update
+          oreQualityCost() {
+            return 100*(2**this.gameStats.oreQuality)
+          },
+          drillCost() {
+            return 200*(1.5+this.gameStats.drillCount**2)
+          },
+          drillSpeedCost() {
+            return 200*(1+this.gameStats.drillDelayReduction**3)
+          },
+          drillPowerCost() {
+            return 250 * (this.gameStats.drillPower ** 2)
+          },
+          //Computed stat menu displays for list rendering
+          statEntries() {
+            const stats = [
+              { label: 'Drill Credits', value: this.gameStats.oreQuality * this.gameStats.drillPower + '/click' },
+              { label: 'Drill Power', value: this.gameStats.drillPower },
+              { label: 'Ore Quality', value: this.gameStats.oreQuality }
+            ]
+            if (this.gameStats.drillCount >= 1) {
+              stats.push(
+                { label: 'AutoDrill Credits', value: this.gameStats.drillCount * this.gameStats.oreQuality * this.gameStats.drillDelayReduction + '/sec' },
+                { label: 'AutoDrills', value: this.gameStats.drillCount },
+                { label: 'AutoDrill Speed', value: this.gameStats.drillDelayReduction }
+              )
+            }
+            return stats
+          }
+        },
+        watch: {
+          'gameStats.credits'(newVal) {
+            gsap.to(this, { duration: 0.5, creditsTweened: newVal })
+          }
+        },
+        methods: {
+          gameLoop(now) { //Used to run all repeating functions
+            const delta = (now - this.lastUpdate) / 1000
+            this.lastUpdate = now
+            const creditsPerSecond = this.gameStats.drillCount * this.gameStats.oreQuality * this.gameStats.drillDelayReduction
+            this.gameStats.credits += creditsPerSecond * delta
+            requestAnimationFrame(this.gameLoop)
+          },
+          implementUpgrade(upgrade) { //Runs the appropriate calculations using one function
+            if (upgrade == "oreQuality") {
+              if (this.gameStats.credits >= this.oreQualityCost) {
+                this.gameStats.credits -= this.oreQualityCost
+                this.gameStats.oreQuality++
+              }
+            } else if (upgrade == "drillCount") {
+              if (this.gameStats.credits >= this.drillCost) {
+                this.gameStats.credits -= this.drillCost
+                this.gameStats.drillCount++
+              }
+            } else if (upgrade == "drillSpeed") {
+              if (this.gameStats.credits >= this.drillSpeedCost) {
+                this.gameStats.credits -= this.drillSpeedCost
+                this.gameStats.drillDelayReduction++
+              }
+            } else if (upgrade == "drillPower") {
+              if (this.gameStats.credits >= this.drillPowerCost) {
+                this.gameStats.credits -= this.drillPowerCost
+                this.gameStats.drillPower++
+              }
+            }
+          },
+          saveGame() {
+            navigator.clipboard.writeText('p'.concat(Math.floor(this.gameStats.credits), 'pa', this.gameStats.oreQuality, 'ab', this.gameStats.drillCount, 'bc', this.gameStats.drillDelayReduction, 'cd', this.gameStats.drillPower, 'd'))
+          },
+          loadGame(saveCode) {//Takes and splits the save code to obtain each new value
+            function getSaveCodeSection(saveCode, sectionIndicater) {
+              const startIndex = saveCode.indexOf(sectionIndicater)
+              const endIndex = saveCode.lastIndexOf(sectionIndicater)
+              return saveCode.substring(startIndex + 1, endIndex)
+            }
+            this.gameStats.credits = Number(getSaveCodeSection(saveCode, 'p'))
+            this.gameStats.oreQuality = Number(getSaveCodeSection(saveCode, 'a'))
+            this.gameStats.drillCount = Number(getSaveCodeSection(saveCode, 'b'))
+            this.gameStats.drillDelayReduction = Number(getSaveCodeSection(saveCode, 'c'))
+            this.gameStats.drillPower = Number(getSaveCodeSection(saveCode, 'd'))
+            this.inputtedSaveCode = ''
+          }
+        },
+        mounted() {
+          requestAnimationFrame(this.gameLoop) //Starts the game loop when the page loads
+        }
+      })
+    </script>
+    <div id='app'>
+      <transition name="fade">
+        <div id="submitMenu" v-if='menuToggles.submitMenu'> <!-- Menu for inputting save code -->
+          Enter Save Code: <button @click="menuToggles.submitMenu = false">x</button><br>
+          <input type="text" v-model:value="inputtedSaveCode" @keyup.enter="menuToggles.submitMenu = false; loadGame(inputtedSaveCode)">
+        </div>
+        <div id="savedMenu" v-if='menuToggles.savedMenu'> <!--Message to confirm that game has been saved-->
+          Save-code has been copied to clipboard
+          <button @click="menuToggles.savedMenu = false">OK</button>
+        </div>
+      </transition>
+      <div id="credits"> <!--Credits display-->
+        Credits: {{creditsAnimated}}
+      </div>
+      <div id="hiddenMenuButton"> <!--Initially hidden menu with important functions-->
+        <button @click="menuToggles.hiddenMenu = !menuToggles.hiddenMenu">=</button>
+      </div>
+      <transition name="fade">
+        <div id="hiddenMenu" v-show='menuToggles.hiddenMenu'>
+          <button @click="menuToggles.savedMenu = true; menuToggles.hiddenMenu = false; saveGame()">Save Game</button>
+          <br><br>
+          <button @click='menuToggles.submitMenu = true; menuToggles.hiddenMenu = false; inputtedSaveCode = ""; menuToggles.savedMenu = false'>Load Game</button>
+          <br><br>
+          <button @click="menuToggles.statMenu = !menuToggles.statMenu; menuToggles.hiddenMenu = false">Toggle Stats</button>
+          <br><br>
+        </div>
+      </transition>
+      <div id="click-section"><!--Button that gives credits on click-->
+        <button id="clicker" class="svg-button" @click="gameStats.credits += gameStats.oreQuality*gameStats.drillPower" ontouchstart="">
+          <svg width="210" height="200" class="rotating">
+            <polygon points="205,100 155,186 55,186 5,100 55,14 155,14" stroke="#ff454c" stroke-width="4" fill="#4c1e3a"/>
+          </svg>
+        </button>
+      </div>
+      <div id="side-menus">
+         <div id="side-menu"><!--Menu for displaying upgrades-->
+           <h2>Store</h2>
+           <p>+ Drill Power <button @click="implementUpgrade('drillPower')" :disabled="gameStats.credits < drillPowerCost" :class="{ 'disabled': gameStats.credits < drillPowerCost }">+</button> {{drillPowerCost}} Credits</p>
+           <p>+ Ore Quality <button @click="implementUpgrade('oreQuality')" :disabled="gameStats.credits < oreQualityCost" :class="{ 'disabled': gameStats.credits < oreQualityCost }">+</button> {{oreQualityCost}} Credits</p>
+           <p>+ AutoDrills <button @click="implementUpgrade('drillCount')" :disabled="gameStats.credits < drillCost" :class="{ 'disabled': gameStats.credits < drillCost }">+</button> {{drillCost}} Credits</p>
+           <p v-if='gameStats.drillCount >= 1'>+ AutoDrill Speed <button @click="implementUpgrade('drillSpeed')" :disabled="gameStats.credits < drillSpeedCost" :class="{ 'disabled': gameStats.credits < drillSpeedCost }">+</button> {{drillSpeedCost}} Credits</p>
+        </div>
+        <transition name="fade">
+          <div id="side-menu" v-show='menuToggles.statMenu'><!--Toggleable menu for displaying game stats-->
+            <h2>Stats</h2>
+            <p v-for="(entry, index) in statEntries" :key="index">
+              {{ entry.label }}: {{ entry.value }}
+            </p>
+          </div>
+        </transition>
+    </div>
+  </body>
+</html>
+<!-- Dev's saved games -->
+<!--Normal: p302929pa11ab25bc10cd21d-->
+<!--AutoOnly: p41477pa4ab4bc3cd1d-->
